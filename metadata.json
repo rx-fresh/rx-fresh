@@ -1,0 +1,6 @@
+{
+  "name": "RX Prescribers",
+  "description": "An AI-powered interface to help patients find local prescribers for specific medications, under the RX Prescribers brand.",
+  "requestFramePermissions": [],
+  "backend": "server.ts"
+}
