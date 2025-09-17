@@ -14,6 +14,15 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
+      },
+      server: {
+        proxy: {
+          '/api': {
+            target: 'https://api.rxprescribers.com',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api/, ''),
+          }
+        }
       }
     };
 });
