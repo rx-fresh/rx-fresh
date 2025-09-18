@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { GeminiAuthService } from '../services/geminiAuthService'
+import { StreamlinedAuth } from './StreamlinedAuth'
 import type { ChatMessage } from '../types'
 
 interface AuthenticatedChatInterfaceProps {
@@ -19,6 +20,7 @@ export const AuthenticatedChatInterface: React.FC<AuthenticatedChatInterfaceProp
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [authService] = useState(() => new GeminiAuthService())
+  const [showAuth, setShowAuth] = useState(false)
 
   useEffect(() => {
     // Initialize conversation based on auth state
@@ -79,16 +81,28 @@ export const AuthenticatedChatInterface: React.FC<AuthenticatedChatInterfaceProp
           // This is a prescriber search
           onSearch(userMessage)
         } else {
-          // Handle other auth-related queries
-          const result = await authService.processAuthRequest(
-            userMessage,
-            newConversation,
-            async (authCall) => {
-              return await authService.executeAuthFunction(authCall)
-            }
-          )
+          // Check if this is an auth request
+          const authKeywords = ['sign in', 'login', 'account', 'create account', 'register', 'auth'];
+          const needsAuth = authKeywords.some(keyword => userMessage.toLowerCase().includes(keyword));
+          
+          if (needsAuth && !user) {
+            setConversation(prev => [...prev, { 
+              author: 'ai', 
+              text: "I'd be happy to help you create an account! Let me open the sign-in process for you."
+            }])
+            setTimeout(() => setShowAuth(true), 500)
+          } else {
+            // Handle other auth-related queries
+            const result = await authService.processAuthRequest(
+              userMessage,
+              newConversation,
+              async (authCall) => {
+                return await authService.executeAuthFunction(authCall)
+              }
+            )
 
-          setConversation(prev => [...prev, { author: 'ai', text: result.response }])
+            setConversation(prev => [...prev, { author: 'ai', text: result.response }])
+          }
         }
       }
     } catch (error) {
@@ -192,6 +206,20 @@ export const AuthenticatedChatInterface: React.FC<AuthenticatedChatInterfaceProp
           </button>
         </div>
       </form>
+
+      {/* Streamlined Auth Modal */}
+      {showAuth && (
+        <StreamlinedAuth
+          onSuccess={(user) => {
+            setShowAuth(false)
+            setConversation(prev => [...prev, { 
+              author: 'ai', 
+              text: `Welcome ${user.email}! You're all set. How can I help you find prescribers today?`
+            }])
+          }}
+          onCancel={() => setShowAuth(false)}
+        />
+      )}
     </div>
   )
 }

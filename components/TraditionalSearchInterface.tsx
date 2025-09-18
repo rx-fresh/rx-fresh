@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { canPerformSearch, getUserCapabilities } from '../lib/contentGating';
 import { requiresUpgrade, generateUpgradeMessage } from '../services/upgradeService';
+import { StreamlinedAuth } from './StreamlinedAuth';
 
 interface SearchFilters {
   medication: string;
@@ -44,6 +45,7 @@ export default function TraditionalSearchInterface({
   
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [upgradePrompt, setUpgradePrompt] = useState<string | null>(null);
+  const [showAuth, setShowAuth] = useState(false);
   
   const capabilities = getUserCapabilities(user);
   const canSearch = canPerformSearch(user, 1, 1);
@@ -115,6 +117,28 @@ export default function TraditionalSearchInterface({
           🤖 Try AI Assistant
         </button>
       </div>
+
+      {/* Auth prompt for non-users */}
+      {!user && (
+        <div className="bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <div className="w-6 h-6 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold">
+              👋
+            </div>
+            <div className="flex-1">
+              <p className="text-white text-sm mb-3">
+                Sign in to save your searches and unlock full prescriber details
+              </p>
+              <button 
+                onClick={() => setShowAuth(true)}
+                className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white rounded-lg text-sm font-medium transition-all duration-200"
+              >
+                Sign In / Create Account
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Upgrade prompt */}
       {upgradePrompt && (
@@ -281,6 +305,17 @@ export default function TraditionalSearchInterface({
           Try the AI Assistant →
         </button>
       </div>
+
+      {/* Streamlined Auth Modal */}
+      {showAuth && (
+        <StreamlinedAuth
+          onSuccess={(user) => {
+            setShowAuth(false)
+            // Refresh the page state or show success message
+          }}
+          onCancel={() => setShowAuth(false)}
+        />
+      )}
     </div>
   );
 }
