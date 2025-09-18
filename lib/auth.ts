@@ -69,6 +69,13 @@ export class AuthService {
   static async getCurrentUser(): Promise<AuthUser | null> {
     try {
       console.log('Getting current user...')
+      
+      // Quick check if Supabase is configured
+      if (!supabase) {
+        console.warn('Supabase not configured, returning null user')
+        return null
+      }
+      
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         console.log('No authenticated user found')
@@ -85,7 +92,7 @@ export class AuthService {
         .single()
 
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Profile fetch timeout')), 5000)
+        setTimeout(() => reject(new Error('Profile fetch timeout')), 2000)
       )
 
       const { data: profile, error } = await Promise.race([profilePromise, timeoutPromise]) as any

@@ -29,7 +29,8 @@ export const useAuthState = () => {
     const loadingTimeout = setTimeout(() => {
       console.warn('Auth loading timed out, setting loading to false')
       setLoading(false)
-    }, 10000) // 10 second timeout
+      setUser(null) // Set user to null on timeout
+    }, 5000) // 5 second timeout (reduced)
 
     // Get initial user with timeout
     const initUser = async () => {
@@ -37,7 +38,7 @@ export const useAuthState = () => {
         const user = await Promise.race([
           AuthService.getCurrentUser(),
           new Promise<null>((_, reject) => 
-            setTimeout(() => reject(new Error('User fetch timeout')), 8000)
+            setTimeout(() => reject(new Error('User fetch timeout')), 3000)
           )
         ])
         console.log('Initial user loaded:', user?.email || 'No user')

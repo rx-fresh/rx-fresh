@@ -183,6 +183,12 @@ Guidelines:
     try {
       const functionCalls: AuthFunctionCall[] = []
       
+      // Safety check for text parameter
+      if (!text || typeof text !== 'string') {
+        console.warn('extractFunctionCallsFromText: invalid text parameter', text)
+        return functionCalls
+      }
+      
       // Look for email patterns to trigger auth functions
       const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g
       const emails = text.match(emailRegex)
