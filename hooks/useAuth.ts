@@ -25,19 +25,47 @@ export const useAuthState = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial user
-    AuthService.getCurrentUser().then(user => {
-      setUser(user)
+    // Set a timeout to prevent infinite loading
+    const loadingTimeout = setTimeout(() => {
+      console.warn('Auth loading timed out, setting loading to false')
       setLoading(false)
-    })
+    }, 10000) // 10 second timeout
+
+    // Get initial user with timeout
+    const initUser = async () => {
+      try {
+        const user = await Promise.race([
+          AuthService.getCurrentUser(),
+          new Promise<null>((_, reject) => 
+            setTimeout(() => reject(new Error('User fetch timeout')), 8000)
+          )
+        ])
+        console.log('Initial user loaded:', user?.email || 'No user')
+        setUser(user)
+        setLoading(false)
+        clearTimeout(loadingTimeout)
+      } catch (error) {
+        console.error('Error loading initial user:', error)
+        setUser(null)
+        setLoading(false)
+        clearTimeout(loadingTimeout)
+      }
+    }
+
+    initUser()
 
     // Listen for auth changes
     const { data: { subscription } } = AuthService.onAuthStateChange((user) => {
+      console.log('Auth state changed:', user?.email || 'No user')
       setUser(user)
       setLoading(false)
+      clearTimeout(loadingTimeout)
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+      clearTimeout(loadingTimeout)
+    }
   }, [])
 
   const signIn = async (email: string) => {

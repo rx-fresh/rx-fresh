@@ -6,7 +6,7 @@ export interface AuthUser {
   email: string
   full_name?: string
   credits: number
-  subscription_tier: 'free' | 'premium' | 'pro'
+  subscription_tier: 'free' | 'basic' | 'premium' | 'annual_premium'
   subscription_expires_at?: string
 }
 
@@ -68,20 +68,50 @@ export class AuthService {
   // Get current user profile
   static async getCurrentUser(): Promise<AuthUser | null> {
     try {
+      console.log('Getting current user...')
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return null
+      if (!user) {
+        console.log('No authenticated user found')
+        return null
+      }
 
-      const { data: profile, error } = await supabase
+      console.log('User found, fetching profile for:', user.email)
+      
+      // Try to get profile with timeout
+      const profilePromise = supabase
         .from('users')
         .select('*')
         .eq('id', user.id)
         .single()
 
-      if (error || !profile) {
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Profile fetch timeout')), 5000)
+      )
+
+      const { data: profile, error } = await Promise.race([profilePromise, timeoutPromise]) as any
+
+      if (error) {
         console.error('Error fetching user profile:', error)
-        return null
+        // Return basic user info even if profile fetch fails
+        return {
+          id: user.id,
+          email: user.email || '',
+          credits: 3, // Default free credits
+          subscription_tier: 'free'
+        }
       }
 
+      if (!profile) {
+        console.warn('No profile found for user, returning basic user info')
+        return {
+          id: user.id,
+          email: user.email || '',
+          credits: 3, // Default free credits
+          subscription_tier: 'free'
+        }
+      }
+
+      console.log('Profile loaded successfully for:', profile.email)
       return {
         id: profile.id,
         email: profile.email,
@@ -92,6 +122,21 @@ export class AuthService {
       }
     } catch (error) {
       console.error('Error getting current user:', error)
+      // Try to return basic auth user info even if everything else fails
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          console.log('Returning basic user info after profile error')
+          return {
+            id: user.id,
+            email: user.email || '',
+            credits: 3,
+            subscription_tier: 'free'
+          }
+        }
+      } catch (authError) {
+        console.error('Even basic auth check failed:', authError)
+      }
       return null
     }
   }
