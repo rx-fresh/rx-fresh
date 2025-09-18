@@ -14,11 +14,11 @@ export class AuthService {
   // Create user in our users table after signup
   static async createSupabaseUser(email: string, fullName?: string): Promise<{ user: User | null, error: string | null }> {
     try {
-      // First, send magic link
+      // Send OTP code to email
       const { data, error: signInError } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`
+          shouldCreateUser: true
         }
       })
 
@@ -32,13 +32,13 @@ export class AuthService {
     }
   }
 
-  // Sign in with magic link
+  // Sign in with OTP code
   static async signIn(email: string): Promise<{ success: boolean, error: string | null }> {
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`
+          shouldCreateUser: true
         }
       })
 
