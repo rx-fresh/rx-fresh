@@ -6,16 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RX Prescribers</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.1.1/",
-    "react": "https://aistudiocdn.com/react@^19.1.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.19.0"
-  }
-}
-</script>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
     body {
@@ -34,8 +24,14 @@
         opacity: 1;
         transform: translateY(0);
     }
+    .gradient-text {
+        background: linear-gradient(to right, #38bdf8, #8b5cf6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
 </style>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body class="bg-slate-900">
     <div id="root"></div>

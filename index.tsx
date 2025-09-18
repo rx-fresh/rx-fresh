@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { AuthCallback } from './pages/AuthCallback';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -9,8 +10,20 @@ if (!rootElement) {
 }
 
 const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+
+// Simple routing based on pathname
+const pathname = window.location.pathname;
+
+if (pathname === '/auth/callback') {
+  root.render(
+    <React.StrictMode>
+      <AuthCallback />
+    </React.StrictMode>
+  );
+} else {
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}

@@ -1,7 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Prescriber, ApiPrescriber, ApiResponse } from '../types';
+import { findPrescribersFromDatabase } from './localDataService';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+let ai: GoogleGenAI;
 
 // Schema to parse the user's natural language query
 const queryParsingSchema = {
@@ -36,6 +37,15 @@ const formatAddress = (addr: ApiPrescriber['address']): string => {
 
 export const findPrescribers = async (query: string): Promise<Prescriber[]> => {
   try {
+    // Initialize AI client if not already done
+    if (!ai) {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_API_KEY;
+      if (!apiKey) {
+        throw new Error('Gemini API key not found in environment variables');
+      }
+      ai = new GoogleGenAI({ apiKey });
+    }
+
     // Step 1: Parse the user's natural language query into structured data
     const parsingResponse = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -47,23 +57,18 @@ export const findPrescribers = async (query: string): Promise<Prescriber[]> => {
     });
     const { drug, zip, radius = 25 } = JSON.parse(parsingResponse.text);
 
-    // Step 2: Fetch real data from the live API via our backend proxy to solve CORS issues
-    const params = new URLSearchParams({
-      drug,
-      zip,
-      radius: radius.toString(),
-    });
-    const apiUrl = `/api/prescribers?${params.toString()}`;
-    const apiResponse = await fetch(apiUrl);
-    
-    if (!apiResponse.ok) {
-      throw new Error(`API request failed with status ${apiResponse.status}`);
-    }
-    const apiData: ApiResponse = await apiResponse.json();
+    // Step 2: Fetch data from local database (much faster than external API)
+    const prescribers = await findPrescribersFromDatabase(drug, zip, radius);
 
-    if (!apiData.prescribers || apiData.results_count === 0) {
+    if (!prescribers || prescribers.length === 0) {
       return [];
     }
+
+    // Create a mock ApiResponse structure for compatibility
+    const apiData: ApiResponse = {
+      prescribers,
+      results_count: prescribers.length
+    };
 
     // Step 3: Enrich the real data with AI analysis
     const enrichmentPrompt = `

@@ -1,0 +1,258 @@
+import { GoogleGenAI, Type } from '@google/genai'
+import { AuthService } from '../lib/auth'
+import type { ChatMessage } from '../types'
+
+let ai: GoogleGenAI
+
+interface AuthFunctionCall {
+  name: 'createSupabaseUser' | 'signIn' | 'signOut' | 'checkCredits'
+  args: Record<string, any>
+}
+
+// Function definitions that Gemini can use for auth operations
+const authFunctions = [
+  {
+    name: "createSupabaseUser",
+    description: "Create a new user account with email and optional full name. Sends magic link for verification.",
+    parameters: {
+      type: "object",
+      properties: {
+        email: {
+          type: "string",
+          description: "User's email address"
+        },
+        fullName: {
+          type: "string",
+          description: "User's full name (optional)"
+        }
+      },
+      required: ["email"]
+    }
+  },
+  {
+    name: "signIn",
+    description: "Sign in existing user with magic link sent to email",
+    parameters: {
+      type: "object",
+      properties: {
+        email: {
+          type: "string",
+          description: "User's email address"
+        }
+      },
+      required: ["email"]
+    }
+  },
+  {
+    name: "signOut",
+    description: "Sign out current user",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: []
+    }
+  },
+  {
+    name: "checkCredits",
+    description: "Check current user's remaining credits",
+    parameters: {
+      type: "object",
+      properties: {},
+      required: []
+    }
+  }
+]
+
+export class GeminiAuthService {
+  private model: any
+
+  constructor() {
+    // Initialize AI client if not already done
+    if (!ai) {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_API_KEY;
+      if (!apiKey) {
+        throw new Error('Gemini API key not found in environment variables');
+      }
+      ai = new GoogleGenAI({ apiKey });
+    }
+    
+    this.model = ai.models
+  }
+
+  async processAuthRequest(
+    message: string, 
+    conversation: ChatMessage[],
+    onAuthAction?: (action: AuthFunctionCall) => Promise<any>
+  ): Promise<{ response: string, functionCalls?: AuthFunctionCall[] }> {
+    try {
+      const prompt = this.buildAuthPrompt(message, conversation)
+      
+      const result = await this.model.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt
+      })
+      const response = result.text
+      
+      // Simple pattern matching for function calls since we can't use function calling API
+      const functionCalls = this.extractFunctionCallsFromText(response)
+      
+      if (functionCalls.length > 0 && onAuthAction) {
+        // Execute function calls
+        const results = await Promise.all(
+          functionCalls.map(call => onAuthAction(call))
+        )
+        
+        // Generate follow-up response based on results
+        const followUpPrompt = this.buildFollowUpPrompt(functionCalls, results)
+        const followUpResult = await this.model.generateContent({
+          model: "gemini-2.5-flash", 
+          contents: followUpPrompt
+        })
+        
+        return {
+          response: followUpResult.text,
+          functionCalls
+        }
+      }
+      
+      return {
+        response: response,
+        functionCalls
+      }
+    } catch (error) {
+      console.error('Error in auth request processing:', error)
+      return {
+        response: "I'm sorry, I encountered an error processing your authentication request. Please try again."
+      }
+    }
+  }
+
+  private buildAuthPrompt(message: string, conversation: ChatMessage[]): string {
+    const conversationHistory = conversation
+      .map(msg => `${msg.author}: ${msg.text}`)
+      .join('\n')
+
+    return `
+You are an AI assistant helping users with authentication for a prescription finder app. You can perform the following actions:
+
+1. createSupabaseUser(email, fullName?) - Create new user account and send magic link
+2. signIn(email) - Send magic link to existing user  
+3. signOut() - Sign out current user
+4. checkCredits() - Check user's remaining search credits
+
+Context: This is a prescription finder app where users need to authenticate to search for prescribers. Free users get 3 search credits.
+
+Conversation history:
+${conversationHistory}
+
+Current message: ${message}
+
+Instructions:
+- If user wants to sign up/create account, use createSupabaseUser
+- If user wants to sign in, use signIn  
+- If user mentions logging out, use signOut
+- If user asks about credits/searches remaining, use checkCredits
+- Be conversational and helpful
+- Explain what magic links are if users seem confused
+- Always confirm the user's email before calling auth functions
+
+Respond naturally and call appropriate functions when needed.
+`
+  }
+
+  private buildFollowUpPrompt(functionCalls: AuthFunctionCall[], results: any[]): string {
+    const callResults = functionCalls.map((call, index) => {
+      return `${call.name}(${JSON.stringify(call.args)}) -> ${JSON.stringify(results[index])}`
+    }).join('\n')
+
+    return `
+Based on these function call results, provide a helpful response to the user:
+
+${callResults}
+
+Guidelines:
+- If magic link was sent successfully, tell user to check their email
+- If there was an error, explain what went wrong in user-friendly terms
+- If credits were checked, let them know how many they have remaining
+- If sign out was successful, confirm they've been signed out
+- Be conversational and supportive
+`
+  }
+
+  private extractFunctionCallsFromText(text: string): AuthFunctionCall[] {
+    try {
+      const functionCalls: AuthFunctionCall[] = []
+      
+      // Look for email patterns to trigger auth functions
+      const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g
+      const emails = text.match(emailRegex)
+      
+      if (emails && emails.length > 0) {
+        const email = emails[0]
+        
+        // If text mentions "sign up", "create account", or "new user"
+        if (text.toLowerCase().includes('sign up') || 
+            text.toLowerCase().includes('create account') || 
+            text.toLowerCase().includes('new user')) {
+          functionCalls.push({
+            name: 'createSupabaseUser',
+            args: { email }
+          })
+        } else if (text.toLowerCase().includes('sign in') || 
+                   text.toLowerCase().includes('login') ||
+                   text.toLowerCase().includes('magic link')) {
+          functionCalls.push({
+            name: 'signIn',
+            args: { email }
+          })
+        }
+      }
+      
+      // Check for sign out requests
+      if (text.toLowerCase().includes('sign out') || 
+          text.toLowerCase().includes('log out') ||
+          text.toLowerCase().includes('logout')) {
+        functionCalls.push({
+          name: 'signOut',
+          args: {}
+        })
+      }
+      
+      // Check for credit inquiries
+      if (text.toLowerCase().includes('credit') || 
+          text.toLowerCase().includes('remaining') ||
+          text.toLowerCase().includes('how many searches')) {
+        functionCalls.push({
+          name: 'checkCredits',
+          args: {}
+        })
+      }
+      
+      return functionCalls
+    } catch (error) {
+      console.error('Error extracting function calls:', error)
+      return []
+    }
+  }
+
+  // Execute auth function calls
+  async executeAuthFunction(call: AuthFunctionCall): Promise<any> {
+    switch (call.name) {
+      case 'createSupabaseUser':
+        return await AuthService.createSupabaseUser(call.args.email, call.args.fullName)
+      
+      case 'signIn':
+        return await AuthService.signIn(call.args.email)
+      
+      case 'signOut':
+        return await AuthService.signOut()
+      
+      case 'checkCredits':
+        const user = await AuthService.getCurrentUser()
+        return { credits: user?.credits || 0 }
+      
+      default:
+        throw new Error(`Unknown function: ${call.name}`)
+    }
+  }
+}
