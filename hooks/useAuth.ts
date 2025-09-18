@@ -26,8 +26,8 @@ export const useAuthState = () => {
 
   useEffect(() => {
     // Get timeout values from environment or use defaults
-    const authTimeout = parseInt(process.env.REACT_APP_AUTH_TIMEOUT || '10000')
-    const loadingTimeout = parseInt(process.env.REACT_APP_LOADING_TIMEOUT || '15000')
+    const authTimeout = parseInt(import.meta.env.VITE_AUTH_TIMEOUT || '10000')
+    const loadingTimeout = parseInt(import.meta.env.VITE_LOADING_TIMEOUT || '15000')
     
     // Set a timeout to prevent infinite loading
     const timeoutId = setTimeout(() => {

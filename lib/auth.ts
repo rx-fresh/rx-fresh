@@ -92,7 +92,7 @@ export class AuthService {
         .single()
 
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Profile fetch timeout')), 2000)
+        setTimeout(() => reject(new Error('Profile fetch timeout')), 8000)
       )
 
       const { data: profile, error } = await Promise.race([profilePromise, timeoutPromise]) as any
