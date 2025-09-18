@@ -9,12 +9,19 @@ export const AuthCallback: React.FC = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        // Set a timeout to prevent infinite loading
+        const timeoutId = setTimeout(() => {
+          setStatus('error')
+          setMessage('Authentication timed out. Redirecting to home...')
+          setTimeout(() => window.location.href = '/', 3000)
+        }, 15000) // 15 second timeout
         // Get the hash parameters from the URL
         const hashParams = new URLSearchParams(window.location.hash.substring(1))
         const accessToken = hashParams.get('access_token')
         const refreshToken = hashParams.get('refresh_token')
 
         if (!accessToken) {
+          clearTimeout(timeoutId)
           setStatus('error')
           setMessage('No access token found in callback URL')
           return
@@ -27,33 +34,55 @@ export const AuthCallback: React.FC = () => {
         })
 
         if (error) {
+          clearTimeout(timeoutId)
           setStatus('error')
           setMessage(`Authentication error: ${error.message}`)
           return
         }
 
         if (data.user) {
-          // Check if user profile exists, if not create it
-          const existingUser = await AuthService.getCurrentUser()
+          console.log('User authenticated:', data.user.email)
           
-          if (!existingUser) {
-            // Create user profile
-            await AuthService.createUserProfile(data.user)
+          try {
+            // Check if user profile exists, if not create it
+            const existingUser = await AuthService.getCurrentUser()
+            console.log('Existing user check:', existingUser)
+            
+            if (!existingUser) {
+              console.log('Creating new user profile...')
+              const newUser = await AuthService.createUserProfile(data.user)
+              console.log('New user created:', newUser)
+              
+              if (!newUser) {
+                console.warn('User profile creation failed, but allowing user to proceed')
+                // Don't block the user, they can still use the app with basic auth
+              }
+            }
+
+            setStatus('success')
+            setMessage('Authentication successful! Redirecting...')
+
+            // Clear the timeout since we succeeded
+            clearTimeout(timeoutId)
+            
+            // Redirect to main app after a short delay
+            setTimeout(() => {
+              window.location.href = '/'
+            }, 2000)
+          } catch (profileError) {
+            console.error('Profile creation/check failed:', profileError)
+            clearTimeout(timeoutId)
+            setStatus('error')
+            setMessage('Failed to set up user profile. Please try again.')
           }
-
-          setStatus('success')
-          setMessage('Authentication successful! Redirecting...')
-
-          // Redirect to main app after a short delay
-          setTimeout(() => {
-            window.location.href = '/'
-          }, 2000)
         } else {
+          clearTimeout(timeoutId)
           setStatus('error')
           setMessage('No user data received')
         }
       } catch (error) {
         console.error('Auth callback error:', error)
+        clearTimeout(timeoutId)
         setStatus('error')
         setMessage('An unexpected error occurred during authentication')
       }
