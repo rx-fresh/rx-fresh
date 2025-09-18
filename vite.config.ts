@@ -16,6 +16,20 @@ export default defineConfig(({ mode }) => {
           '@': path.resolve(__dirname, '.'),
         }
       },
+      build: {
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              vendor: ['react', 'react-dom'],
+              supabase: ['@supabase/supabase-js'],
+              paypal: ['@paypal/react-paypal-js'],
+              gemini: ['@google/genai'],
+              utils: ['crypto-js', 'uuid']
+            }
+          }
+        },
+        chunkSizeWarningLimit: 1000
+      },
       server: {
         proxy: {
           '/api/prescribers': {
