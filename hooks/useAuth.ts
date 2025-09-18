@@ -25,12 +25,16 @@ export const useAuthState = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Get timeout values from environment or use defaults
+    const authTimeout = parseInt(process.env.REACT_APP_AUTH_TIMEOUT || '10000')
+    const loadingTimeout = parseInt(process.env.REACT_APP_LOADING_TIMEOUT || '15000')
+    
     // Set a timeout to prevent infinite loading
-    const loadingTimeout = setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       console.warn('Auth loading timed out, setting loading to false')
       setLoading(false)
       setUser(null) // Set user to null on timeout
-    }, 5000) // 5 second timeout (reduced)
+    }, loadingTimeout)
 
     // Get initial user with timeout
     const initUser = async () => {
@@ -38,18 +42,18 @@ export const useAuthState = () => {
         const user = await Promise.race([
           AuthService.getCurrentUser(),
           new Promise<null>((_, reject) => 
-            setTimeout(() => reject(new Error('User fetch timeout')), 3000)
+            setTimeout(() => reject(new Error('User fetch timeout')), authTimeout)
           )
         ])
         console.log('Initial user loaded:', user?.email || 'No user')
         setUser(user)
         setLoading(false)
-        clearTimeout(loadingTimeout)
+        clearTimeout(timeoutId)
       } catch (error) {
         console.error('Error loading initial user:', error)
         setUser(null)
         setLoading(false)
-        clearTimeout(loadingTimeout)
+        clearTimeout(timeoutId)
       }
     }
 
@@ -60,12 +64,12 @@ export const useAuthState = () => {
       console.log('Auth state changed:', user?.email || 'No user')
       setUser(user)
       setLoading(false)
-      clearTimeout(loadingTimeout)
+      clearTimeout(timeoutId)
     })
 
     return () => {
       subscription.unsubscribe()
-      clearTimeout(loadingTimeout)
+      clearTimeout(timeoutId)
     }
   }, [])
 
