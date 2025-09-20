@@ -134,6 +134,11 @@ Deno.serve(async (req) => {
       subject: 'Your OTP Code',
       html
     });
+    if (sendResult.error) {
+      console.error('Resend email send error:', sendResult.error);
+      // Consider returning a 502 Bad Gateway or a custom error code
+      throw new Error(`Failed to send email: ${sendResult.error.message}`);
+    }
 
     // Insert audit log using service role key (non-blocking but await to detect problems)
     try {

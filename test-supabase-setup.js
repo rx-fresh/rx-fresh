@@ -36,6 +36,7 @@ async function testEdgeFunction() {
       console.log('✅ Edge function test passed!');
       console.log('Response:', result);
     } else {
+      console.log("Full response:", await response.text());
       console.log('❌ Edge function test failed!');
       console.log('Status:', response.status);
       console.log('Error:', result);

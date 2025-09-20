@@ -55,7 +55,17 @@ export const findPrescribers = async (query: string): Promise<Prescriber[]> => {
         responseSchema: queryParsingSchema,
       },
     });
-    const { drug, zip, radius = 25 } = JSON.parse(parsingResponse.text);
+    // Safely extract and parse text from parsing response
+    let parsedData: { drug: string; zip: string; radius?: number };
+    try {
+      const parsingText = parsingResponse.candidates[0].content.parts[0].text;
+      parsedData = JSON.parse(parsingText);
+    } catch (error) {
+      console.error('Error parsing Gemini parsing response:', error);
+      throw new Error('Failed to parse drug and location from your request');
+    }
+
+    const { drug, zip, radius = 25 } = parsedData;
 
     // Step 2: Fetch data from local database (much faster than external API)
     const prescribers = await findPrescribersFromDatabase(drug, zip, radius);
@@ -94,7 +104,20 @@ export const findPrescribers = async (query: string): Promise<Prescriber[]> => {
         },
     });
 
-    const enrichedData: { npi: number; score: number; focus: string; }[] = JSON.parse(enrichmentResponse.text);
+    // Safely extract and parse text from enrichment response
+    let enrichedData: { npi: number; score: number; focus: string; }[];
+    try {
+      const enrichmentText = enrichmentResponse.candidates[0].content.parts[0].text;
+      enrichedData = JSON.parse(enrichmentText);
+    } catch (error) {
+      console.error('Error parsing Gemini enrichment response:', error);
+      // Provide default enrichment data if parsing fails
+      enrichedData = apiData.prescribers.map(p => ({
+        npi: p.npi,
+        score: 3.5,
+        focus: `Experienced prescriber of ${p.drug.brand_name}.`
+      }));
+    }
 
     // Step 4: Merge real data with AI-enriched data
     const enrichmentMap = new Map(enrichedData.map(e => [e.npi, e]));

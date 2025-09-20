@@ -91,7 +91,15 @@ export class GeminiAuthService {
         model: "gemini-2.5-flash",
         contents: prompt
       })
-      const response = result.text
+
+      // Safely extract text from response
+      let response: string;
+      try {
+        response = result.candidates[0].content.parts[0].text;
+      } catch (error) {
+        console.error('Error extracting text from Gemini response:', error);
+        throw new Error('Failed to parse Gemini API response');
+      }
       
       // Simple pattern matching for function calls since we can't use function calling API
       const functionCalls = this.extractFunctionCallsFromText(response)
@@ -105,12 +113,21 @@ export class GeminiAuthService {
         // Generate follow-up response based on results
         const followUpPrompt = this.buildFollowUpPrompt(functionCalls, results)
         const followUpResult = await this.model.generateContent({
-          model: "gemini-2.5-flash", 
+          model: "gemini-2.5-flash",
           contents: followUpPrompt
         })
-        
+
+        // Safely extract text from follow-up response
+        let followUpResponse: string;
+        try {
+          followUpResponse = followUpResult.candidates[0].content.parts[0].text;
+        } catch (error) {
+          console.error('Error extracting text from follow-up Gemini response:', error);
+          followUpResponse = "I'm sorry, I encountered an error processing your request. Please try again.";
+        }
+
         return {
-          response: followUpResult.text,
+          response: followUpResponse,
           functionCalls
         }
       }
