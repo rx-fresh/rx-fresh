@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { useSimpleAuth } from '../hooks/useSimpleAuth';
 import { canPerformSearch, getUserCapabilities } from '../lib/contentGating';
 import { requiresUpgrade, generateUpgradeMessage } from '../services/upgradeService';
 import { StreamlinedAuth } from './StreamlinedAuth';
@@ -29,12 +29,12 @@ const specialtyOptions = [
   'Neurology'
 ];
 
-export default function TraditionalSearchInterface({ 
-  onSearch, 
-  onSwitchToAI, 
-  error 
+export default function TraditionalSearchInterface({
+  onSearch,
+  onSwitchToAI,
+  error
 }: TraditionalSearchInterfaceProps) {
-  const { user } = useAuth();
+  const { user } = useSimpleAuth();
   const [filters, setFilters] = useState<SearchFilters>({
     medication: '',
     zipcode: '',
@@ -42,11 +42,11 @@ export default function TraditionalSearchInterface({
     radius: 25,
     acceptsInsurance: false
   });
-  
+
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [upgradePrompt, setUpgradePrompt] = useState<string | null>(null);
   const [showAuth, setShowAuth] = useState(false);
-  
+
   const capabilities = getUserCapabilities(user);
   const canSearch = canPerformSearch(user, 1, 1);
 
@@ -59,7 +59,7 @@ export default function TraditionalSearchInterface({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!filters.medication.trim()) {
       return;
     }
@@ -92,10 +92,10 @@ export default function TraditionalSearchInterface({
       setUpgradePrompt('Upgrade to Premium to use multiple filters simultaneously');
       return;
     }
-    
+
     setFilters(prev => ({
       ...prev,
-      specialties: checked 
+      specialties: checked
         ? [...prev.specialties, specialty]
         : prev.specialties.filter(s => s !== specialty)
     }));
@@ -129,7 +129,7 @@ export default function TraditionalSearchInterface({
               <p className="text-white text-sm mb-3">
                 Sign in to save your searches and unlock full prescriber details
               </p>
-              <button 
+              <button
                 onClick={() => setShowAuth(true)}
                 className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white rounded-lg text-sm font-medium transition-all duration-200"
               >
@@ -175,7 +175,7 @@ export default function TraditionalSearchInterface({
               required
             />
           </div>
-          
+
           <div>
             <label htmlFor="zipcode" className="block text-sm font-medium text-gray-300 mb-2">
               Location
@@ -227,7 +227,7 @@ export default function TraditionalSearchInterface({
                 ))}
               </div>
             </div>
-            
+
             <div>
               <label htmlFor="radius" className="block text-sm font-medium text-gray-300 mb-2">
                 Search Radius: {filters.radius} miles
@@ -243,7 +243,7 @@ export default function TraditionalSearchInterface({
                 disabled={!capabilities.canSearch}
               />
             </div>
-            
+
             <label className="flex items-center space-x-2 text-sm">
               <input
                 type="checkbox"
@@ -270,12 +270,12 @@ export default function TraditionalSearchInterface({
       </form>
 
       {/* Credits Display */}
-      {user && user.subscription_tier !== 'free' && (
+      {user && user.credits !== undefined && (
         <div className="flex items-center justify-between text-sm text-gray-400 pt-2 border-t border-gray-700">
           <span>
-            {capabilities.hasUnlimitedSearches 
-              ? 'Unlimited searches' 
-              : `${user.credits_remaining} searches remaining`
+            {user.credits > 0
+              ? `${user.credits} searches remaining`
+              : 'No searches remaining'
             }
           </span>
           <span className="text-xs">
@@ -295,7 +295,7 @@ export default function TraditionalSearchInterface({
       <div className="mt-6 p-4 bg-gradient-to-r from-gray-800/50 to-gray-700/30 rounded-lg border border-gray-600/30">
         <h3 className="text-sm font-medium text-gray-300 mb-2">💡 Pro Tip</h3>
         <p className="text-xs text-gray-400 mb-3">
-          Our AI assistant can understand natural language queries like "Find pediatricians near 90210 who prescribe ADHD medications" 
+          Our AI assistant can understand natural language queries like "Find pediatricians near 90210 who prescribe ADHD medications"
           and provide personalized recommendations.
         </p>
         <button

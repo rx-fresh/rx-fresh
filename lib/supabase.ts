@@ -3,11 +3,21 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+// Only create Supabase client if valid environment variables are provided
+let supabase: any = null
+
+if (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
+  try {
+    supabase = createClient(supabaseUrl, supabaseAnonKey)
+  } catch (error) {
+    console.warn('Failed to initialize Supabase client:', error)
+    supabase = null
+  }
+} else {
+  console.warn('Supabase environment variables not configured or invalid. Some features may not work.')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export { supabase }
 
 export type Database = {
   public: {

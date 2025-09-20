@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '../hooks/useAuth'
+import { useSimpleAuth } from '../hooks/useSimpleAuth'
 import { GeminiAuthService } from '../services/geminiAuthService'
 import { StreamlinedAuth } from './StreamlinedAuth'
 import type { ChatMessage } from '../types'
@@ -15,7 +15,7 @@ export const AuthenticatedChatInterface: React.FC<AuthenticatedChatInterfaceProp
   error,
   onEscapeToTraditional
 }) => {
-  const { user } = useAuth()
+  const { user } = useSimpleAuth()
   const [conversation, setConversation] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
