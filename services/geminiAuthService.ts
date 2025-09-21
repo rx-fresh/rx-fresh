@@ -1,19 +1,19 @@
 import { GoogleGenAI, Type } from '@google/genai'
-import { AuthService } from '../lib/auth'
+import { SimpleAuthService } from '../lib/simpleAuth'
 import type { ChatMessage } from '../types'
 
 let ai: GoogleGenAI
 
 interface AuthFunctionCall {
-  name: 'createSupabaseUser' | 'signIn' | 'signOut' | 'checkCredits'
+  name: 'createUser' | 'signIn' | 'signOut' | 'checkCredits'
   args: Record<string, any>
 }
 
 // Function definitions that Gemini can use for auth operations
 const authFunctions = [
   {
-    name: "createSupabaseUser",
-    description: "Create a new user account with email and optional full name. Sends magic link for verification.",
+    name: "createUser",
+    description: "Create a new user account with email and optional full name.",
     parameters: {
       type: "object",
       properties: {
@@ -31,7 +31,7 @@ const authFunctions = [
   },
   {
     name: "signIn",
-    description: "Sign in existing user with magic link sent to email",
+    description: "Sign in existing user with email",
     parameters: {
       type: "object",
       properties: {
@@ -95,7 +95,7 @@ export class GeminiAuthService {
       // Safely extract text from response
       let response: string;
       try {
-        response = result.candidates[0].content.parts[0].text;
+        response = result.candidates[0]?.content?.parts[0]?.text ?? '';
       } catch (error) {
         console.error('Error extracting text from Gemini response:', error);
         throw new Error('Failed to parse Gemini API response');
@@ -120,7 +120,7 @@ export class GeminiAuthService {
         // Safely extract text from follow-up response
         let followUpResponse: string;
         try {
-          followUpResponse = followUpResult.candidates[0].content.parts[0].text;
+          followUpResponse = followUpResult.candidates[0]?.content?.parts[0]?.text ?? "I'm sorry, I encountered an error processing your request. Please try again.";
         } catch (error) {
           console.error('Error extracting text from follow-up Gemini response:', error);
           followUpResponse = "I'm sorry, I encountered an error processing your request. Please try again.";
@@ -152,8 +152,8 @@ export class GeminiAuthService {
     return `
 You are an AI assistant helping users with authentication for a prescription finder app. You can perform the following actions:
 
-1. createSupabaseUser(email, fullName?) - Create new user account and send magic link
-2. signIn(email) - Send magic link to existing user  
+1. createUser(email, fullName?) - Create new user account
+2. signIn(email) - Sign in existing user  
 3. signOut() - Sign out current user
 4. checkCredits() - Check user's remaining search credits
 
@@ -165,12 +165,11 @@ ${conversationHistory}
 Current message: ${message}
 
 Instructions:
-- If user wants to sign up/create account, use createSupabaseUser
+- If user wants to sign up/create account, use createUser
 - If user wants to sign in, use signIn  
 - If user mentions logging out, use signOut
 - If user asks about credits/searches remaining, use checkCredits
 - Be conversational and helpful
-- Explain what magic links are if users seem confused
 - Always confirm the user's email before calling auth functions
 
 Respond naturally and call appropriate functions when needed.
@@ -188,7 +187,7 @@ Based on these function call results, provide a helpful response to the user:
 ${callResults}
 
 Guidelines:
-- If magic link was sent successfully, tell user to check their email
+- If sign in was successful, welcome the user
 - If there was an error, explain what went wrong in user-friendly terms
 - If credits were checked, let them know how many they have remaining
 - If sign out was successful, confirm they've been signed out
@@ -218,12 +217,11 @@ Guidelines:
             text.toLowerCase().includes('create account') || 
             text.toLowerCase().includes('new user')) {
           functionCalls.push({
-            name: 'createSupabaseUser',
+            name: 'createUser',
             args: { email }
           })
         } else if (text.toLowerCase().includes('sign in') || 
-                   text.toLowerCase().includes('login') ||
-                   text.toLowerCase().includes('magic link')) {
+                   text.toLowerCase().includes('login')) {
           functionCalls.push({
             name: 'signIn',
             args: { email }
@@ -261,17 +259,17 @@ Guidelines:
   // Execute auth function calls
   async executeAuthFunction(call: AuthFunctionCall): Promise<any> {
     switch (call.name) {
-      case 'createSupabaseUser':
-        return await AuthService.createSupabaseUser(call.args.email, call.args.fullName)
+      case 'createUser':
+        return await SimpleAuthService.createUser(call.args.email, call.args.fullName)
       
       case 'signIn':
-        return await AuthService.signIn(call.args.email)
+        return await SimpleAuthService.signIn(call.args.email)
       
       case 'signOut':
-        return await AuthService.signOut()
+        return await SimpleAuthService.signOut()
       
       case 'checkCredits':
-        const user = await AuthService.getCurrentUser()
+        const user = await SimpleAuthService.getCurrentUser()
         return { credits: user?.credits || 0 }
       
       default:
