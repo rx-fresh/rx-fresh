@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useAuth } from '../hooks/useAuth'
+import { useSimpleAuth } from '../hooks/useSimpleAuth'
 
 interface AuthFlowProps {
   onComplete: () => void
@@ -10,13 +10,13 @@ interface AuthFlowProps {
 export const AuthFlow: React.FC<AuthFlowProps> = ({ 
   onComplete, 
   title = "Sign in to continue",
-  subtitle = "Enter your email to receive a magic link"
+  subtitle = "Enter your email to get started"
 }) => {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [step, setStep] = useState<'email' | 'check-email'>('email')
-  const { signIn } = useAuth()
+  const { signIn } = useSimpleAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,9 +30,9 @@ export const AuthFlow: React.FC<AuthFlowProps> = ({
     setIsLoading(false)
 
     if (success) {
-      setStep('check-email')
+      onComplete()
     } else {
-      setError(authError || 'Failed to send magic link')
+      setError(authError || 'Failed to sign in')
     }
   }
 
