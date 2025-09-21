@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { useSimpleAuth } from '../hooks/useSimpleAuth'
+import { useAuth } from '../hooks/useAuth'
 
 interface UserProfileProps {
   onClose?: () => void
 }
 
 export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
-  const { user, signOut } = useSimpleAuth()
+  const { user, signOut } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
 
   const handleSignOut = async () => {
