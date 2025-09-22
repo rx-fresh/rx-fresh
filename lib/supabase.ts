@@ -13,12 +13,8 @@ if (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: true
-      },
-      global: {
-        headers: {
-          'Authorization': undefined,
-        },
-      },
+      }
+      // Removed the problematic global headers configuration that was causing duplicate auth headers
     })
   } catch (error) {
     console.warn('Failed to initialize Supabase client:', error)
