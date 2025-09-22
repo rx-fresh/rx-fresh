@@ -1,4 +1,4 @@
-import { supabase } from './supabase-fixed'
+import { supabase } from './supabase'
 import { User } from '@supabase/supabase-js'
 
 export interface AuthUser {
@@ -69,13 +69,13 @@ export class AuthService {
   static async getCurrentUser(): Promise<AuthUser | null> {
     try {
       console.log('Getting current user...')
-      
+
       // Quick check if Supabase is configured
       if (!supabase) {
         console.warn('Supabase not configured, returning null user')
         return null
       }
-      
+
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         console.log('No authenticated user found')
@@ -83,7 +83,7 @@ export class AuthService {
       }
 
       console.log('User found, fetching profile for:', user.email)
-      
+
       // Try to get profile with timeout
       const profilePromise = supabase
         .from('users')

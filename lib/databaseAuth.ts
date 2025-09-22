@@ -1,4 +1,4 @@
-import { supabase } from './supabase-fixed';
+import { supabase } from './supabase';
 
 export interface DatabaseAuthUser {
   id: string;
@@ -28,7 +28,7 @@ export class DatabaseAuthService {
       // In development, return the OTP code for testing
       // In production, this would be sent via email hook
       const isDevelopment = import.meta.env.DEV;
-      
+
       return {
         success: data.success,
         error: data.error,
@@ -36,9 +36,9 @@ export class DatabaseAuthService {
       };
     } catch (error) {
       console.error('Error sending OTP:', error);
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Failed to send OTP' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to send OTP'
       };
     }
   }
@@ -85,9 +85,9 @@ export class DatabaseAuthService {
       };
     } catch (error) {
       console.error('Error verifying OTP:', error);
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Failed to verify OTP' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to verify OTP'
       };
     }
   }
@@ -104,7 +104,7 @@ export class DatabaseAuthService {
       }
 
       const session = JSON.parse(storedSession);
-      
+
       // Check if session expired
       if (new Date(session.expires_at) < new Date()) {
         localStorage.removeItem('rx_auth_user');
@@ -165,9 +165,9 @@ export class DatabaseAuthService {
       return { success: true };
     } catch (error) {
       console.error('Error signing out:', error);
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Failed to sign out' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to sign out'
       };
     }
   }
@@ -186,9 +186,9 @@ export class DatabaseAuthService {
       return { success: true, data };
     } catch (error) {
       console.error('Error checking subscription status:', error);
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Failed to check subscription status' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to check subscription status'
       };
     }
   }
@@ -207,9 +207,9 @@ export class DatabaseAuthService {
       return { success: data.success, data, error: data.error };
     } catch (error) {
       console.error('Error incrementing search usage:', error);
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Failed to increment search usage' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to increment search usage'
       };
     }
   }

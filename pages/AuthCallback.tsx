@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase-fixed'
+import { supabase } from '../lib/supabase'
 import { AuthService } from '../lib/auth'
 
 export const AuthCallback: React.FC = () => {
@@ -10,7 +10,7 @@ export const AuthCallback: React.FC = () => {
     const handleAuthCallback = async () => {
       try {
         // Set a timeout to prevent infinite loading
-        const timeoutId = setTimeout(() => {
+        const timeoutId: NodeJS.Timeout = setTimeout(() => {
           setStatus('error')
           setMessage('Authentication timed out. Redirecting to home...')
           setTimeout(() => window.location.href = '/', 3000)
@@ -42,17 +42,17 @@ export const AuthCallback: React.FC = () => {
 
         if (data.user) {
           console.log('User authenticated:', data.user.email)
-          
+
           try {
             // Check if user profile exists, if not create it
             const existingUser = await AuthService.getCurrentUser()
             console.log('Existing user check:', existingUser)
-            
+
             if (!existingUser) {
               console.log('Creating new user profile...')
               const newUser = await AuthService.createUserProfile(data.user)
               console.log('New user created:', newUser)
-              
+
               if (!newUser) {
                 console.warn('User profile creation failed, but allowing user to proceed')
                 // Don't block the user, they can still use the app with basic auth
@@ -64,7 +64,7 @@ export const AuthCallback: React.FC = () => {
 
             // Clear the timeout since we succeeded
             clearTimeout(timeoutId)
-            
+
             // Redirect to main app after a short delay
             setTimeout(() => {
               window.location.href = '/'
@@ -82,7 +82,6 @@ export const AuthCallback: React.FC = () => {
         }
       } catch (error) {
         console.error('Auth callback error:', error)
-        clearTimeout(timeoutId)
         setStatus('error')
         setMessage('An unexpected error occurred during authentication')
       }

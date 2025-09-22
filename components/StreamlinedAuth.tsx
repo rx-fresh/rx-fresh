@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase-fixed';
+import { supabase } from '../lib/supabase';
 
 interface StreamlinedAuthProps {
   onSuccess: (user: any) => void;
@@ -8,9 +8,9 @@ interface StreamlinedAuthProps {
 
 type AuthMode = 'email' | 'code' | 'waiting' | 'success';
 
-export const StreamlinedAuth: React.FC<StreamlinedAuthProps> = ({ 
-  onSuccess, 
-  onCancel 
+export const StreamlinedAuth: React.FC<StreamlinedAuthProps> = ({
+  onSuccess,
+  onCancel
 }) => {
   const [mode, setMode] = useState<AuthMode>('email');
   const [email, setEmail] = useState('');
@@ -93,7 +93,7 @@ export const StreamlinedAuth: React.FC<StreamlinedAuthProps> = ({
 
   const resendCode = async () => {
     if (countdown > 0) return;
-    
+
     setLoading(true);
     setError(null);
 
@@ -154,7 +154,7 @@ export const StreamlinedAuth: React.FC<StreamlinedAuthProps> = ({
                 disabled={loading}
               />
             </div>
-            
+
             {error && (
               <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
                 <p className="text-red-400 text-sm">{error}</p>
