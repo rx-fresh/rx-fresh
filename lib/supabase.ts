@@ -8,7 +8,18 @@ let supabase: any = null
 
 if (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
   try {
-    supabase = createClient(supabaseUrl, supabaseAnonKey)
+    supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      },
+      global: {
+        headers: {
+          'Authorization': undefined,
+        },
+      },
+    })
   } catch (error) {
     console.warn('Failed to initialize Supabase client:', error)
     supabase = null

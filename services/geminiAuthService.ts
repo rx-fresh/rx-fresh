@@ -93,9 +93,12 @@ export class GeminiAuthService {
       })
 
       // Safely extract text from response
+      // Safely extract text from response
+      // Safely extract text from response
+      // Safely extract text from response
       let response: string;
       try {
-        response = result.candidates[0].content.parts[0].text;
+        response = result.candidates[0]?.content?.parts[0]?.text ?? '';
       } catch (error) {
         console.error('Error extracting text from Gemini response:', error);
         throw new Error('Failed to parse Gemini API response');

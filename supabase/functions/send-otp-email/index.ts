@@ -28,6 +28,7 @@ function renderOtpEmailHtml(otp: string) {
 }
 
 Deno.serve(async (req) => {
+  console.log("Request received:", { method: req.method, url: req.url });
   // CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', {
@@ -37,11 +38,11 @@ Deno.serve(async (req) => {
 
   try {
     // Validate hook authorization header
-    const authHeader = req.headers.get('authorization') ?? '';
-    const expectedHookSecret = Deno.env.get('SUPABASE_AUTH_HOOK_SECRET') ?? '';
+    const expectedHookSecret = Deno.env.get('AUTH_HOOK_SECRET') ?? '';
+    console.log("Found AUTH_HOOK_SECRET:", !!expectedHookSecret);
 
     if (!expectedHookSecret) {
-      console.error('Missing SUPABASE_AUTH_HOOK_SECRET in environment');
+      console.error('Missing AUTH_HOOK_SECRET in environment');
       return new Response(JSON.stringify({
         success: false,
         error: 'server misconfiguration'
@@ -54,7 +55,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (!authHeader.startsWith('Bearer ') || authHeader.slice(7) !== expectedHookSecret) {
+    if (authHeader !== `Bearer ${expectedHookSecret}`) {
       console.warn('Unauthorized hook call');
       return new Response(JSON.stringify({
         success: false,
@@ -73,6 +74,10 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
     const resendApiKey = Deno.env.get('RESEND_API_KEY') ?? '';
     const resendFrom = Deno.env.get('RESEND_FROM') ?? '';
+    console.log("Found SUPABASE_URL:", !!supabaseUrl);
+    console.log("Found SUPABASE_SERVICE_ROLE_KEY:", !!supabaseServiceKey);
+    console.log("Found RESEND_API_KEY:", !!resendApiKey);
+    console.log("Found RESEND_FROM:", !!resendFrom);
 
     if (!supabaseUrl || !supabaseServiceKey || !resendApiKey || !resendFrom) {
       console.error('One or more required environment variables missing');
@@ -107,12 +112,14 @@ Deno.serve(async (req) => {
         body = {};
       }
     }
+    console.log("Request body:", body);
 
     const url = new URL(req.url);
     const email = body.email || url.searchParams.get('email');
     const otp = body.otp || url.searchParams.get('otp');
 
     if (!email || !otp) {
+      console.error("Missing email or otp in request body");
       return new Response(JSON.stringify({
         success: false,
         error: 'Missing required fields: email and otp'
@@ -128,12 +135,15 @@ Deno.serve(async (req) => {
     const html = renderOtpEmailHtml(otp);
 
     // Send via Resend
+    console.log(`Sending email to ${email} from ${resendFrom}`);
     const sendResult = await resend.emails.send({
       from: resendFrom,
       to: [email],
       subject: 'Your OTP Code',
       html
     });
+    console.log("Resend response:", sendResult);
+
     if (sendResult.error) {
       console.error('Resend email send error:', sendResult.error);
       // Consider returning a 502 Bad Gateway or a custom error code

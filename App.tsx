@@ -11,7 +11,7 @@ import ResultsDisplay from './components/ResultsDisplay';
 import LandingPage from './components/LandingPage';
 import Paywall from './components/Paywall';
 import ConversationalPayment from './components/ConversationalPayment';
-import { SimpleAuthProvider, useSimpleAuth } from './hooks/useSimpleAuth';
+import { AuthProvider, useAuth } from './hooks/useAuth';
 import { UserProfile } from './components/UserProfile';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -27,7 +27,7 @@ const AppContent: React.FC = () => {
   const [userId, setUserId] = useState<string>('');
   const [currentQuery, setCurrentQuery] = useState<string>('');
   const [showPaymentPrompt, setShowPaymentPrompt] = useState(false);
-  const { user, loading } = useSimpleAuth();
+  const { user, loading } = useAuth();
 
   // Initialize user ID for payment tracking
   useEffect(() => {
@@ -234,9 +234,9 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <SimpleAuthProvider>
+    <AuthProvider>
       <AppContent />
-    </SimpleAuthProvider>
+    </AuthProvider>
   );
 };
 
