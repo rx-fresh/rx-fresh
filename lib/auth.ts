@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabase } from './supabase-fixed'
 import { User } from '@supabase/supabase-js'
 
 export interface AuthUser {
