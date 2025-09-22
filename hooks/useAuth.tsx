@@ -28,11 +28,10 @@ export const useAuthState = () => {
     // Get timeout values from environment or use defaults
     const authTimeout = parseInt(import.meta.env.VITE_AUTH_TIMEOUT || '10000')
     const loadingTimeout = parseInt(import.meta.env.VITE_LOADING_TIMEOUT || '15000')
-    
+
     // Set a timeout to prevent infinite loading
     const timeoutId = setTimeout(() => {
       console.warn('Auth loading timed out, setting loading to false')
-      setLoading(false)
       setUser(null) // Set user to null on timeout
     }, loadingTimeout)
 
@@ -41,7 +40,7 @@ export const useAuthState = () => {
       try {
         const user = await Promise.race([
           AuthService.getCurrentUser(),
-          new Promise<null>((_, reject) => 
+          new Promise<null>((_, reject) =>
             setTimeout(() => reject(new Error('User fetch timeout')), authTimeout)
           )
         ])
@@ -102,6 +101,20 @@ export const useAuthState = () => {
     createUser,
     refreshUser
   }
+}
+
+interface AuthProviderProps {
+  children: React.ReactNode
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const authState = useAuthState()
+
+  return (
+    <AuthContext.Provider value={authState}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export { AuthContext }
