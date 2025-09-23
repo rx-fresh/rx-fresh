@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { anonymousSupabase } from '../lib/supabase-anon';
 
 interface StreamlinedAuthProps {
   onSuccess: (user: any) => void;
@@ -47,8 +48,8 @@ export const StreamlinedAuth: React.FC<StreamlinedAuthProps> = ({
     setError(null);
 
     try {
-      // Send OTP code to email (no redirect)
-      const { error } = await supabase.auth.signInWithOtp({
+      // Use anonymous client for OTP sending to avoid auth headers
+      const { error } = await anonymousSupabase.auth.signInWithOtp({
         email: email.trim(),
         options: {
           shouldCreateUser: true,
@@ -98,7 +99,8 @@ export const StreamlinedAuth: React.FC<StreamlinedAuthProps> = ({
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      // Use anonymous client for resending OTP
+      const { error } = await anonymousSupabase.auth.signInWithOtp({
         email,
         options: {
           shouldCreateUser: true,
