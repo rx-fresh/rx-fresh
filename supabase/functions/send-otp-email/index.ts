@@ -38,6 +38,7 @@ Deno.serve(async (req) => {
 
   try {
     // Validate hook authorization header
+    const authHeader = req.headers.get('authorization') ?? '';
     const expectedHookSecret = Deno.env.get('AUTH_HOOK_SECRET') ?? '';
     console.log("Found AUTH_HOOK_SECRET:", !!expectedHookSecret);
 

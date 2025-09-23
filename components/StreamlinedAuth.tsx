@@ -48,18 +48,33 @@ export const StreamlinedAuth: React.FC<StreamlinedAuthProps> = ({
     setError(null);
 
     try {
-      // Use anonymous client for OTP sending to avoid auth headers
-      const { error } = await anonymousSupabase.auth.signInWithOtp({
-        email: email.trim(),
-        options: {
-          shouldCreateUser: true,
-        }
+      // Generate 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // Use custom Edge Function instead of built-in OTP
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-otp-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          otp: otp
+        })
       });
 
-      if (error) throw error;
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to send verification code');
+      }
 
       setMode('code');
       setCountdown(60); // 60 second cooldown
+
+      // Store OTP temporarily for verification (in production, this should be more secure)
+      sessionStorage.setItem('pendingOtp', otp);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send code');
     } finally {
@@ -75,16 +90,32 @@ export const StreamlinedAuth: React.FC<StreamlinedAuthProps> = ({
     setError(null);
 
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        email,
-        token: code,
-        type: 'email'
+      // Get the stored OTP for verification
+      const storedOtp = sessionStorage.getItem('pendingOtp');
+
+      if (!storedOtp || code !== storedOtp) {
+        throw new Error('Invalid verification code');
+      }
+
+      // Create user account using Supabase auth
+      const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: `temp_${Date.now()}`, // Temporary password, user will be prompted to set a real one
+        options: {
+          data: {
+            full_name: email.split('@')[0], // Use email prefix as default name
+          }
+        }
       });
 
       if (error) throw error;
 
-      // Success will be handled by auth state change listener
-      setMode('waiting');
+      if (data.user) {
+        // Success will be handled by auth state change listener
+        setMode('waiting');
+        // Clear the stored OTP
+        sessionStorage.removeItem('pendingOtp');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Invalid code');
     } finally {
@@ -99,17 +130,32 @@ export const StreamlinedAuth: React.FC<StreamlinedAuthProps> = ({
     setError(null);
 
     try {
-      // Use anonymous client for resending OTP
-      const { error } = await anonymousSupabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: true,
-        }
+      // Generate new 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // Use custom Edge Function for resending OTP
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-otp-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          email,
+          otp: otp
+        })
       });
 
-      if (error) throw error;
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to resend verification code');
+      }
 
       setCountdown(60);
+
+      // Store new OTP
+      sessionStorage.setItem('pendingOtp', otp);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to resend code');
     } finally {
