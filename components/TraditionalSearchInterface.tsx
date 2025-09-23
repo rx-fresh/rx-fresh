@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { useSimpleAuth } from '../hooks/useSimpleAuth';
 import { canPerformSearch, getUserCapabilities } from '../lib/contentGating';
 import { requiresUpgrade, generateUpgradeMessage } from '../services/upgradeService';
 import { StreamlinedAuth } from './StreamlinedAuth';
