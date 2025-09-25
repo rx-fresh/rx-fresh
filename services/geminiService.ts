@@ -1,6 +1,7 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { VertexAI, Type } from "@google-cloud/vertexai";
 import type { Prescriber, ApiPrescriber, ApiResponse } from '../types';
 import { findPrescribersFromDatabase } from './localDataService';
+import { GoogleGenAI } from "@google/genai";
 
 let ai: GoogleGenAI;
 
