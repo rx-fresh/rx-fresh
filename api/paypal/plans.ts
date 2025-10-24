@@ -16,7 +16,7 @@ export default async function handler(req: Request): Promise<Response> {
     const plans: SubscriptionPlan[] = [
       {
         id: '1',
-        plan_id: 'RX_PREMIUM_MONTHLY',
+        plan_id: process.env.VITE_PAYPAL_PLAN_ID_PREMIUM || 'P-RX_PREMIUM_MONTHLY',
         name: 'RX Prescribers Premium',
         description: 'Unlimited searches and full prescriber details',
         price: 9.99,

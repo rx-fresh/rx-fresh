@@ -1,0 +1,799 @@
+[
+ {
+  "npi": 1003000407,
+  "name": "Dr. DAVID GIRARDI",
+  "specialty": "Family Medicine",
+  "address": {
+   "street": "100 HOSPITAL RD",
+   "city": "BROOKVILLE",
+   "state": "PA",
+   "zip": "15825"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 54,
+  "distance_miles": 11.4,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003000530,
+  "name": "Dr. AMANDA SEMONCHE",
+  "specialty": "Internal Medicine",
+  "address": {
+   "street": "1021 PARK AVE",
+   "city": "QUAKERTOWN",
+   "state": "PA",
+   "zip": "18951"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 204,
+  "distance_miles": 15.1,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003003054,
+  "name": "Dr. JOHN WYBLE",
+  "specialty": "Dentist",
+  "address": {
+   "street": "117 FOX PLAN DR",
+   "city": "MONROEVILLE",
+   "state": "PA",
+   "zip": "15146"
+  },
+  "drug": {
+   "brand_name": "clonazepam"
+  },
+  "total_claims": 129,
+  "distance_miles": 9.3,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003006107,
+  "name": "Dr. SAAD AL-SAAB",
+  "specialty": "Internal Medicine",
+  "address": {
+   "street": "126 E CHURCH ST",
+   "city": "SOMERSET",
+   "state": "PA",
+   "zip": "15501"
+  },
+  "drug": {
+   "brand_name": "diazepam"
+  },
+  "total_claims": 150,
+  "distance_miles": 13.1,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003007592,
+  "name": "Dr. CAROLYN MILLER",
+  "specialty": "Physician Assistant",
+  "address": {
+   "street": "225 SOUTH ST",
+   "city": "RIDGWAY",
+   "state": "PA",
+   "zip": "15853"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 198,
+  "distance_miles": 23.3,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003007683,
+  "name": "Dr. MELANIE TUROCK",
+  "specialty": "Emergency Medicine",
+  "address": {
+   "street": "801 OSTRUM ST",
+   "city": "BETHLEHEM",
+   "state": "PA",
+   "zip": "18015"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 84,
+  "distance_miles": 18.1,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003009085,
+  "name": "Dr. PHILIPPE SZAPARY",
+  "specialty": "Internal Medicine",
+  "address": {
+   "street": "3400 CIVIC CENTER BLVD",
+   "city": "PHILADELPHIA",
+   "state": "PA",
+   "zip": "19104"
+  },
+  "drug": {
+   "brand_name": "clonazepam"
+  },
+  "total_claims": 63,
+  "distance_miles": 6.2,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003010133,
+  "name": "Dr. JON LEPLEY",
+  "specialty": "Family Medicine",
+  "address": {
+   "street": "38-42 W. ORANGE STREET",
+   "city": "LANCASTER",
+   "state": "PA",
+   "zip": "17601"
+  },
+  "drug": {
+   "brand_name": "diazepam"
+  },
+  "total_claims": 249,
+  "distance_miles": 14.5,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003011438,
+  "name": "Dr. CHRISTOPHER HOLLAND",
+  "specialty": "Physician Assistant",
+  "address": {
+   "street": "620 HOWARD AVE",
+   "city": "ALTOONA",
+   "state": "PA",
+   "zip": "16601"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 238,
+  "distance_miles": 7,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003012154,
+  "name": "Dr. MARK REUTTER",
+  "specialty": "Emergency Medicine",
+  "address": {
+   "street": "1068 W BALTIMORE PIKE",
+   "city": "MEDIA",
+   "state": "PA",
+   "zip": "19063"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 132,
+  "distance_miles": 4,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003012642,
+  "name": "Dr. NARGES MAZLOOM",
+  "specialty": "Otolaryngology",
+  "address": {
+   "street": "3445 HIGH POINT BLVD",
+   "city": "BETHLEHEM",
+   "state": "PA",
+   "zip": "18017"
+  },
+  "drug": {
+   "brand_name": "clonazepam"
+  },
+  "total_claims": 62,
+  "distance_miles": 2.5,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003013483,
+  "name": "Dr. JESSICA BOEHMLER",
+  "specialty": "Internal Medicine",
+  "address": {
+   "street": "1250 S CEDAR CREST BLVD",
+   "city": "ALLENTOWN",
+   "state": "PA",
+   "zip": "18103"
+  },
+  "drug": {
+   "brand_name": "diazepam"
+  },
+  "total_claims": 153,
+  "distance_miles": 3.6,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003016304,
+  "name": "Dr. JOHN SNYDER",
+  "specialty": "Optometrist",
+  "address": {
+   "street": "1200 W GODFREY AVE",
+   "city": "PHILADELPHIA",
+   "state": "PA",
+   "zip": "19141"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 87,
+  "distance_miles": 13.8,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003019571,
+  "name": "Dr. RAJESH SEHGAL",
+  "specialty": "Internal Medicine",
+  "address": {
+   "street": "400 OXFORD DR",
+   "city": "MONROEVILLE",
+   "state": "PA",
+   "zip": "15146"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 93,
+  "distance_miles": 3.1,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003019811,
+  "name": "Dr. EREK LAM",
+  "specialty": "Psychiatry & Neurology",
+  "address": {
+   "street": "9104 BABCOCK BLVD STE 2116",
+   "city": "PITTSBURGH",
+   "state": "PA",
+   "zip": "15237"
+  },
+  "drug": {
+   "brand_name": "clonazepam"
+  },
+  "total_claims": 100,
+  "distance_miles": 9.7,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003019936,
+  "name": "Dr. JOSEPH KWOK",
+  "specialty": "Physical Medicine & Rehabilitation",
+  "address": {
+   "street": "3471 5TH AVE",
+   "city": "PITTSBURGH",
+   "state": "PA",
+   "zip": "15213"
+  },
+  "drug": {
+   "brand_name": "diazepam"
+  },
+  "total_claims": 152,
+  "distance_miles": 15.1,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003021460,
+  "name": "Dr. JAMES MCCLOY",
+  "specialty": "Dentist",
+  "address": {
+   "street": "101 W MAIN ST",
+   "city": "MT PLEASANT",
+   "state": "PA",
+   "zip": "15666"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 249,
+  "distance_miles": 13.2,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003021734,
+  "name": "Dr. GERALD FISHER",
+  "specialty": "Dentist",
+  "address": {
+   "street": "2690 WILLIAM PENN AVE",
+   "city": "JOHNSTOWN",
+   "state": "PA",
+   "zip": "15909"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 210,
+  "distance_miles": 13.3,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003022245,
+  "name": "Dr. TRACI COOK",
+  "specialty": "Obstetrics & Gynecology",
+  "address": {
+   "street": "1203 LANGHORNE NEWTOWN RD",
+   "city": "LANGHORNE",
+   "state": "PA",
+   "zip": "19047"
+  },
+  "drug": {
+   "brand_name": "clonazepam"
+  },
+  "total_claims": 156,
+  "distance_miles": 20,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003022500,
+  "name": "Dr. VENKATESH SUNDARARAJAN",
+  "specialty": "Anesthesiology",
+  "address": {
+   "street": "2701 BLAIR MILL RD",
+   "city": "WILLOW GROVE",
+   "state": "PA",
+   "zip": "19090"
+  },
+  "drug": {
+   "brand_name": "diazepam"
+  },
+  "total_claims": 212,
+  "distance_miles": 22.5,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003024365,
+  "name": "Dr. RIKA OMALLEY",
+  "specialty": "Emergency Medicine",
+  "address": {
+   "street": "1020 SANSOM ST",
+   "city": "PHILADELPHIA",
+   "state": "PA",
+   "zip": "19107"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 64,
+  "distance_miles": 11.1,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003024811,
+  "name": "Dr. LISA HAMAKER",
+  "specialty": "Internal Medicine",
+  "address": {
+   "street": "100 MARKET ST STE 300",
+   "city": "COLLEGEVILLE",
+   "state": "PA",
+   "zip": "19426"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 221,
+  "distance_miles": 17.9,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003024936,
+  "name": "Dr. JOSEPH BENAKNIN",
+  "specialty": "Emergency Medicine",
+  "address": {
+   "street": "111 S FRONT ST",
+   "city": "HARRISBURG",
+   "state": "PA",
+   "zip": "17101"
+  },
+  "drug": {
+   "brand_name": "clonazepam"
+  },
+  "total_claims": 137,
+  "distance_miles": 11.3,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003025461,
+  "name": "Dr. JAMIE GARFIELD",
+  "specialty": "Internal Medicine",
+  "address": {
+   "street": "3401 N BROAD ST",
+   "city": "PHILADELPHIA",
+   "state": "PA",
+   "zip": "19140"
+  },
+  "drug": {
+   "brand_name": "diazepam"
+  },
+  "total_claims": 142,
+  "distance_miles": 20,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003025776,
+  "name": "Dr. THEODORE WASIK",
+  "specialty": "Psychiatry & Neurology",
+  "address": {
+   "street": "1 MEDICAL CENTER BLVD",
+   "city": "CHESTER",
+   "state": "PA",
+   "zip": "19013"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 227,
+  "distance_miles": 19.1,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003029562,
+  "name": "Dr. NICOLE SWALLOW",
+  "specialty": "Internal Medicine",
+  "address": {
+   "street": "500 UNIVERSITY DR",
+   "city": "HERSHEY",
+   "state": "PA",
+   "zip": "17033"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 186,
+  "distance_miles": 4.1,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003031147,
+  "name": "Dr. RONALD SHERRY",
+  "specialty": "Dentist",
+  "address": {
+   "street": "757 FREDERICKS GROVE ROAD",
+   "city": "LEHIGHTON",
+   "state": "PA",
+   "zip": "18235"
+  },
+  "drug": {
+   "brand_name": "clonazepam"
+  },
+  "total_claims": 178,
+  "distance_miles": 22.8,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003034653,
+  "name": "Dr. JAMES HILL",
+  "specialty": "Dentist",
+  "address": {
+   "street": "2339 CHICHESTER AVE",
+   "city": "BOOTHWYN",
+   "state": "PA",
+   "zip": "19061"
+  },
+  "drug": {
+   "brand_name": "diazepam"
+  },
+  "total_claims": 204,
+  "distance_miles": 8.2,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003037292,
+  "name": "Dr. JEFFREY WEINER",
+  "specialty": "Dentist",
+  "address": {
+   "street": "3254 RED LION RD",
+   "city": "PHILADELPHIA",
+   "state": "PA",
+   "zip": "19114"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 218,
+  "distance_miles": 1.2,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003037979,
+  "name": "Dr. BRENDAN MULLIGAN",
+  "specialty": "Dentist",
+  "address": {
+   "street": "208 W STATE ST",
+   "city": "KENNETT SQUARE",
+   "state": "PA",
+   "zip": "19348"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 203,
+  "distance_miles": 19.3,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003038761,
+  "name": "Dr. ELIZABETH DAUER",
+  "specialty": "Surgery",
+  "address": {
+   "street": "3401 N BROAD ST",
+   "city": "PHILADELPHIA",
+   "state": "PA",
+   "zip": "19140"
+  },
+  "drug": {
+   "brand_name": "clonazepam"
+  },
+  "total_claims": 56,
+  "distance_miles": 24.5,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ },
+ {
+  "npi": 1003040882,
+  "name": "Dr. NEERAV GOYAL",
+  "specialty": "Otolaryngology",
+  "address": {
+   "street": "500 UNIVERSITY DR",
+   "city": "HERSHEY",
+   "state": "PA",
+   "zip": "17033"
+  },
+  "drug": {
+   "brand_name": "diazepam"
+  },
+  "total_claims": 116,
+  "distance_miles": 14.9,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003042714,
+  "name": "Dr. MARIA FLORES",
+  "specialty": "General Practice",
+  "address": {
+   "street": "401-55 WEST ALLEGHENY AVENUE",
+   "city": "PHILADELPHIA",
+   "state": "PA",
+   "zip": "19133"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 146,
+  "distance_miles": 12.5,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003043555,
+  "name": "Dr. JULIE ORLOSKY",
+  "specialty": "Family Medicine",
+  "address": {
+   "street": "95 LEONARD AVE",
+   "city": "WASHINGTON",
+   "state": "PA",
+   "zip": "15301"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 115,
+  "distance_miles": 19,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003043803,
+  "name": "Dr. SHANNON ALSOP",
+  "specialty": "Family Medicine",
+  "address": {
+   "street": "1777 SENTRY PKWY W",
+   "city": "BLUE BELL",
+   "state": "PA",
+   "zip": "19422"
+  },
+  "drug": {
+   "brand_name": "clonazepam"
+  },
+  "total_claims": 61,
+  "distance_miles": 12.7,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003043928,
+  "name": "Dr. SUPRINA DORAI",
+  "specialty": "Emergency Medicine",
+  "address": {
+   "street": "2545 SCHOENERSVILLE RD",
+   "city": "BETHLEHEM",
+   "state": "PA",
+   "zip": "18017"
+  },
+  "drug": {
+   "brand_name": "diazepam"
+  },
+  "total_claims": 198,
+  "distance_miles": 22.9,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam"
+  ]
+ },
+ {
+  "npi": 1003044934,
+  "name": "Dr. DAVID METZGER",
+  "specialty": "Family Medicine",
+  "address": {
+   "street": "4300 LONDONDERRY RD",
+   "city": "HARRISBURG",
+   "state": "PA",
+   "zip": "17109"
+  },
+  "drug": {
+   "brand_name": "alprazolam"
+  },
+  "total_claims": 105,
+  "distance_miles": 10.8,
+  "drugs": [
+   "alprazolam",
+   "lorazepam"
+  ]
+ },
+ {
+  "npi": 1003045139,
+  "name": "Dr. ADRIENNE CARNAHAN",
+  "specialty": "Physician Assistant",
+  "address": {
+   "street": "231 GRANITE RUN DR",
+   "city": "LANCASTER",
+   "state": "PA",
+   "zip": "17601"
+  },
+  "drug": {
+   "brand_name": "lorazepam"
+  },
+  "total_claims": 234,
+  "distance_miles": 13.6,
+  "drugs": [
+   "alprazolam",
+   "lorazepam",
+   "clonazepam",
+   "diazepam"
+  ]
+ }
+]

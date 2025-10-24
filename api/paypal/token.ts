@@ -10,7 +10,7 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   try {
-    const clientId = process.env.PAYPAL_CLIENT_ID;
+    const clientId = process.env.VITE_PAYPAL_CLIENT_ID;
     const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
     
     if (!clientId || !clientSecret) {

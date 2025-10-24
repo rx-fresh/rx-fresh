@@ -1,30 +1,30 @@
-import { VertexAI, Type } from "@google-cloud/vertexai";
+
 import type { Prescriber, ApiPrescriber, ApiResponse } from '../types';
-import { findPrescribersFromDatabase } from './localDataService';
+
 import { GoogleGenAI } from "@google/genai";
 
 let ai: GoogleGenAI;
 
 // Schema to parse the user's natural language query
 const queryParsingSchema = {
-  type: Type.OBJECT,
+  type: "object",
   properties: {
-    drug: { type: Type.STRING, description: "The specific medication name the user is asking for." },
-    zip: { type: Type.STRING, description: "The 5-digit US ZIP code for the user's desired location." },
-    radius: { type: Type.NUMBER, description: "The search radius in miles. Defaults to 25 if not specified." },
+    drug: { type: "string", description: "The specific medication name the user is asking for." },
+    zip: { type: "string", description: "The 5-digit US ZIP code for the user's desired location." },
+    radius: { type: "number", description: "The search radius in miles. Defaults to 25 if not specified." },
   },
   required: ["drug", "zip"],
 };
 
 // Schema for the AI to enrich the real data - phone number generation removed.
 const enrichmentSchema = {
-  type: Type.ARRAY,
+  type: "array",
   items: {
-    type: Type.OBJECT,
+    type: "object",
     properties: {
-      npi: { type: Type.NUMBER, description: "The original NPI of the prescriber." },
-      score: { type: Type.NUMBER, description: "A patient satisfaction score from 1.0 to 5.0, calculated based on specialty relevance and claim volume. Can be a float." },
-      focus: { type: Type.STRING, description: "A short, analytical sentence about their prescribing focus, derived from their specialty and high claim count for this drug." },
+      npi: { type: "number", description: "The original NPI of the prescriber." },
+      score: { type: "number", description: "A patient satisfaction score from 1.0 to 5.0, calculated based on specialty relevance and claim volume. Can be a float." },
+      focus: { type: "string", description: "A short, analytical sentence about their prescribing focus, derived from their specialty and high claim count for this drug." },
     },
     required: ["npi", "score", "focus"],
   },
@@ -68,8 +68,12 @@ export const findPrescribers = async (query: string): Promise<Prescriber[]> => {
 
     const { drug, zip, radius = 25 } = parsedData;
 
-    // Step 2: Fetch data from local database (much faster than external API)
-    const prescribers = await findPrescribersFromDatabase(drug, zip, radius);
+    // Step 2: Fetch data from the PHP backend
+        const response = await fetch(`/api/search?drug=${drug}&zip=${zip}&radius=${radius}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch data from the backend');
+    }
+    const prescribers = await response.json();
 
     if (!prescribers || prescribers.length === 0) {
       return [];
